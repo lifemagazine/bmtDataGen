@@ -28,6 +28,8 @@ import org.bouncycastle.util.io.pem.PemWriter;
 
 public class GenRsaInsertDB {
 
+	private static final int COMMIT_COUNT = 100;
+	
 	private static final int KEY_SIZE = 1024;
 	
 	private static final String[] BANK_CODE = {"002", "003", "004", "005", "007", "010", "020", "021", "023", "027", "031", "032", "034", "035", "037", "039", "089", "090"};
@@ -148,16 +150,21 @@ public class GenRsaInsertDB {
 
 	private static void insertDB(int startNum, int endNum) throws ClassNotFoundException, SQLException {
 		Connection con = null; 
-		Statement stmt = null; 
-//		int result = 0;
+		Statement stmt = null;
+		long cnt = 0;
 		try { 
 			Class.forName("org.hsqldb.jdbc.JDBCDriver"); 
 			con = DriverManager.getConnection( "jdbc:hsqldb:hsql://localhost/xdb", "SA", ""); 
 			stmt = con.createStatement();
 			for (int i=startNum; i<=endNum; i++) {
 				CertModel cert = genData(i);
-//				System.out.println(i + " : " + cert.getInsertSql());
 				stmt.executeUpdate(cert.getInsertSql());
+				if (cnt == COMMIT_COUNT) {
+					con.commit(); 
+					cnt = 0;
+				} else {
+					cnt++;
+				}
 			}
 			con.commit(); 
 		} catch (Exception e) { 
