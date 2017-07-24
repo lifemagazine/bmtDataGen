@@ -101,7 +101,7 @@ public class GenRsaInsertDB {
 		cert.setCompanyName("SKBC Co.");
 		cert.setSubjectName("Test");
 		cert.setHashMsg(getHash(cert.getJuminNum()));
-		cert.setSignMsg(getSign(cert.getHashMsg()));
+		cert.setSignMsg(getSign(cert.getHashMsg() + cert.getId()));
 		
 		ArrayList<String> keyList = createRsa();
 		
@@ -130,7 +130,7 @@ public class GenRsaInsertDB {
 
 	    signature.initSign(keyPair.getPrivate(), new SecureRandom());
 
-	    byte[] message = "1111117777777".getBytes();
+	    byte[] message = originalString.getBytes();
 	    signature.update(message);
 
 	    byte[] sigBytes = signature.sign();
