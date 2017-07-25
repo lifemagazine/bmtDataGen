@@ -30,20 +30,23 @@ public class GenRsaInsertDB {
 
 	private static final int COMMIT_COUNT = 100;
 	
-	private static final int KEY_SIZE = 1024;
+	private static final int KEY_SIZE = 2048;
 	
 	private static final String[] BANK_CODE = {"002", "003", "004", "005", "007", "010", "020", "021", "023", "027", "031", "032", "034", "035", "037", "039", "089", "090"};
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException, IOException, NumberFormatException, ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
 		
-		if (args.length != 2) {
+		/*if (args.length != 2) {
 			System.err.println("2 parameter needed");
 			System.exit(9);
 		}
 		
-		insertDB(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-//		insertDB(1, 10);
+		insertDB(Integer.parseInt(args[0]), Integer.parseInt(args[1]));*/
+		
+		ArrayList<String> list = createRsa();
+		System.out.println(list.get(0));
+		System.out.println(list.get(1));
 
 	}
 
@@ -101,7 +104,8 @@ public class GenRsaInsertDB {
 		cert.setCompanyName("SKBC Co.");
 		cert.setSubjectName("Test");
 		cert.setHashMsg(getHash(cert.getJuminNum()));
-		cert.setSignMsg(getSign(cert.getHashMsg() + cert.getId()));
+		cert.setSignMsg(getSign(cert.getHashMsg()));
+		cert.setSignMsg4Login(getSign(cert.getHashMsg() + cert.getId()));
 		
 		ArrayList<String> keyList = createRsa();
 		

@@ -16,10 +16,11 @@ public class CertModel {
 	private String pubPem;
 	private String hashMsg;
 	private String signMsg;
+	private String signMsg4Login;
 	
 	public String getInsertSql() {
 		StringBuilder sb = new StringBuilder("insert into bmt_qry_rsa (");
-		sb.append("seq, id, jumin_num, country, state, location, organization, orginization_unit, company_name, subject_name, pri_pem, pub_pem, hash_msg, sign_msg) values (");
+		sb.append("seq, id, jumin_num, country, state, location, organization, orginization_unit, company_name, subject_name, pri_pem, pub_pem, hash_msg, sign_msg, sign_msg_login) values (");
 		sb.append(seq).append(", '");
 		sb.append(id).append("', '");
 		sb.append(juminNum).append("', '");
@@ -33,7 +34,8 @@ public class CertModel {
 		sb.append(privPem).append("', '");
 		sb.append(pubPem).append("', '");
 		sb.append(hashMsg).append("', '");
-		sb.append(signMsg).append("')");
+		sb.append(signMsg).append("', '");
+		sb.append(signMsg4Login).append("')");
 		return sb.toString();
 	}
 	
@@ -125,5 +127,11 @@ public class CertModel {
 	}
 	public void setSignMsg(String signMsg) {
 		this.signMsg = signMsg;
+	}
+	public String getSignMsg4Login() {
+		return signMsg4Login;
+	}
+	public void setSignMsg4Login(String signMsg4Login) {
+		this.signMsg4Login = signMsg4Login;
 	}
 }
