@@ -33,21 +33,19 @@ public class GenRsaInsertDB {
 	private static final int KEY_SIZE = 2048;
 	
 	private static final String[] BANK_CODE = {"002", "003", "004", "005", "007", "010", "020", "021", "023", "027", "031", "032", "034", "035", "037", "039", "089", "090"};
+	private static final String[] STATE_CODE = {"Seoul", "Pusan", "Jeju", "Daegu", "Incheon", "Seoul", "Daejeon", "Gyeonggi", "Gyeongnam", "Gyeongbuk", "Jeonnam", "Jeonbuk", "Gangwon", "Chungnam", "Chungbuk", "Gwanju", "Seoul", "Seoul"};
 
-	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException, IOException, NumberFormatException, ClassNotFoundException, SQLException {
+	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		
-		/*if (args.length != 2) {
+		if (args.length != 2) {
 			System.err.println("2 parameter needed");
 			System.exit(9);
 		}
 		
-		insertDB(Integer.parseInt(args[0]), Integer.parseInt(args[1]));*/
+		long totalCnt = insertDB(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
 		
-		ArrayList<String> list = createRsa();
-		System.out.println(list.get(0));
-		System.out.println(list.get(1));
-
+		System.out.println("Good job~! Generated " + totalCnt + " rows.");
 	}
 
 	private static ArrayList<String> createRsa() throws NoSuchAlgorithmException, NoSuchProviderException, IOException {
@@ -97,8 +95,8 @@ public class GenRsaInsertDB {
 		cert.setId(BANK_CODE[index] + fullFormat(seedCount, '0', 12));
 		cert.setJuminNum(fullFormat(seedCount, '7', 13));
 		cert.setCountry("KR");
-		cert.setState("Seoul");
-		cert.setLocation("Gangnamgu");
+		cert.setState(STATE_CODE[index]);
+		cert.setLocation("");
 		cert.setOrganization("SK");
 		cert.setOrganizationUnit("Blockchain group");
 		cert.setCompanyName("SKBC Co.");
@@ -152,9 +150,10 @@ public class GenRsaInsertDB {
 		return sb.toString() + s;
 	}
 
-	private static void insertDB(int startNum, int endNum) throws ClassNotFoundException, SQLException {
+	private static long insertDB(int startNum, int endNum) throws Exception {
 		Connection con = null; 
 		Statement stmt = null;
+		long totalCnt = 0;
 		long cnt = 0;
 		try { 
 			Class.forName("org.hsqldb.jdbc.JDBCDriver"); 
@@ -163,6 +162,7 @@ public class GenRsaInsertDB {
 			for (int i=startNum; i<=endNum; i++) {
 				CertModel cert = genData(i);
 				stmt.executeUpdate(cert.getInsertSql());
+				totalCnt++;
 				if (cnt == COMMIT_COUNT) {
 					con.commit(); 
 					cnt = 0;
@@ -171,9 +171,12 @@ public class GenRsaInsertDB {
 				}
 			}
 			con.commit(); 
+			
+			return totalCnt;
 		} catch (Exception e) { 
 			e.printStackTrace(System.out); 
-		} 
+			throw new Exception(e.getMessage());
+		}
 	}
 
 }
